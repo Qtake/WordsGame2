@@ -1,60 +1,30 @@
 ﻿using System.Globalization;
-using WordsGame.Languages;
+using WordGame2.Languages;
 
 namespace WordGame2
 {
     internal class Language
     {
-        private readonly Dictionary<string, string> _languages = new Dictionary<string, string>()
-        {
-            { "English", "en-US" },
-            { "Русский", "ru-RU" }
-        };
-
-        private string _key;
-        private int _index;
-
+        private readonly Dictionary<string, string> _languages;
+  
         public Language()
         {
-            _key = string.Empty;
-            _index = 0;
-        }
-
-        public void CreateMenu()
-        {
-            string[] menuElements = _languages.Keys.ToArray();
-            Console.CursorVisible = false;
-
-            while (true)
+            _languages = new Dictionary<string, string>()
             {
-                PrintMenuElements(menuElements);
-                switch (Console.ReadKey(true).Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        _index--;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        _index++;
-                        break;
-                    case ConsoleKey.Enter:
-                        Console.CursorVisible = true;
-                        _key = menuElements[_index];
-                        Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_languages[_key]);
-                        return;
-                }
-                _index = (_index + menuElements.Length) % menuElements.Length;
-            }
+                { "English", "en-US" },
+                { "Русский", "ru-RU" }
+            };
         }
 
-        private void PrintMenuElements(string[] menuElements)
+        public string[] GetKeys()
         {
-            Console.Clear();
-            Console.WriteLine(Messages.SelectLanguage);
-
-            for (int i = 0; i < menuElements.Length; i++)
-            {
-                Console.WriteLine("{0} {1}", menuElements[i], i == _index ? "<<--" : "");
-            }
+            return _languages.Keys.ToArray();
         }
+
+        public void SelectLanguage(string key)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_languages[key]);
+        }
+
     }
 }
