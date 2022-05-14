@@ -8,17 +8,10 @@ public class Program
         Language language = new Language();
         Menu languagesMenu = new Menu(language.GetKeys(), Messages.InputWord);
         int index = languagesMenu.SelectMenuElement();
-        string key = language.GetKeys().ToArray()[index];
+        string key = language.GetKeys()[index];
         language.SelectLanguage(key);
 
-        Console.Clear();
-        Console.WriteLine(Messages.InputWord);
-        string primaryWord = (Console.ReadLine() ?? "").ToLower();
-        
-
-        Gameplay gameplay = new Gameplay(primaryWord);
+        Gameplay gameplay = new Gameplay();
         gameplay.Start();
-        gameplay.Restart();
-
     }
 }

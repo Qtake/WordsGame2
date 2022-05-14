@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using WordGame2.Languages;
 
 namespace WordGame2
 {

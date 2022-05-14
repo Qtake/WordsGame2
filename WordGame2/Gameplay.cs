@@ -1,112 +1,116 @@
 ﻿using System.Text.RegularExpressions;
 using WordGame2.Languages;
+using System.IO;
 
 namespace WordGame2
 {
     internal class Gameplay
     {
-        public string ComposedWord { get; set; }
-        private readonly string _primaryWord;
+        private string _composedWord;
+        private string _primaryWord;
         private Dictionary<char, int> _primaryWordLetters;
         private Stack<string> _usedWords;
 
         private const int YES = 0;
         private const int CLOSE_APPLICATION_WITHOUT_ERRORS = 0;
         
-        public Gameplay(string primaryWord)
+        public Gameplay()
         {
-            ComposedWord = string.Empty;
-            _primaryWord = primaryWord;
+            _composedWord = string.Empty;
+            _primaryWord = string.Empty;
             _usedWords = new Stack<string>();
-            _usedWords.Push(primaryWord);
             _primaryWordLetters = new Dictionary<char, int>();
         }
 
-        public void Start()
+        public bool CheckPrimaryWord()
         {
-            if ((_primaryWord?.Length is < 8 or > 30) || string.IsNullOrEmpty(_primaryWord))
+            if ((_primaryWord?.Length is < 8 or > 30) || _primaryWord == string.Empty)
             {
-                Console.WriteLine(Messages.WordLengthError + "\n" + "Нажмите любую клавишу для продолжения");
-                Console.Read();
-                return;
+                Console.WriteLine(Messages.WordLengthError + "\n" + Messages.KeyToContinue);
+                return false;
             }
 
             if (!Regex.IsMatch(_primaryWord, Messages.LettersRegex))
             {
-                Console.WriteLine(Messages.WordCharactersError + "\n" + "Нажмите любую клавишу для продолжения");
-                Console.Read();
+                Console.WriteLine(Messages.WordCharactersError + "\n" + Messages.KeyToContinue);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckComposedWord()
+        {
+            if (_composedWord == string.Empty || !Regex.IsMatch(_composedWord, Messages.LettersRegex))
+            {
+                Console.WriteLine(Messages.IncorectCompose + "\n" + Messages.KeyToContinue);
+                return false;
+            }
+
+            if (!MatchLetters())
+            {
+                Console.WriteLine(Messages.IncorectCompose + "\n" + Messages.KeyToContinue);
+                return false;
+            }
+
+            if (_usedWords.Contains(_composedWord))
+            {
+                Console.WriteLine(Messages.WordIsUsed + "\n" + Messages.KeyToContinue);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void Start()
+        {
+            Console.Clear();
+            Console.WriteLine(Messages.PrimaryWordInput);
+            _primaryWord = (Console.ReadLine() ?? "").ToLower();
+
+            if (!CheckPrimaryWord())
+            {
                 return;
             }
 
+            Console.Clear();
+            Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
+
+            _usedWords.Push(_primaryWord);
             _primaryWordLetters = CreateDictionary(_primaryWord);
             int number = 0;
 
             while (true)
             {
                 Console.WriteLine(number % 2 == 0 ? "\n" + Messages.FirstPlayerTurn : "\n" + Messages.SecondPlayerTurn);
+                _composedWord = (Console.ReadLine() ?? "").ToLower();
 
-                ComposedWord = (Console.ReadLine() ?? "").ToLower();
-
-                if (ComposedWord == string.Empty || !Regex.IsMatch(ComposedWord, Messages.LettersRegex))
+                if (!CheckComposedWord())
                 {
-                    Console.WriteLine(Messages.IncorectCompose + ' ' + Messages.Lose + "\n" + "Нажмите любую клавишу для продолжения");
-                    Console.Read();
-                    return;
+                    break;
                 }
 
-                if (!MatchLetters())
-                {
-                    Console.WriteLine(Messages.IncorectCompose + ' ' + Messages.Lose + "\n" + "Нажмите любую клавишу для продолжения");
-                    Console.Read();
-                    return;
-                }
-
-                if (_usedWords.Contains(ComposedWord))
-                {
-                    Console.WriteLine(Messages.WordIsUsed);
-                    Console.Read();
-                    return;
-                }
-
-                _usedWords.Push(ComposedWord);
+                _usedWords.Push(_composedWord);
                 number++;
             }
+
+            Restart();
         }
 
-        public void Restart()
+        private void Restart()
         {
-            string[] menuElements = { "Yes", "No" };
-            Menu confirmMenu = new Menu(menuElements, "Restart?");
+            Console.ReadKey();
+            _usedWords.Clear();
+            string[] menuElements = { Messages.Yes, Messages.No };
+            Menu confirmMenu = new Menu(menuElements, Messages.Restart);
             int index = confirmMenu.SelectMenuElement();
             
             if (index == YES)
             {
                 Start();
             }
-            
+
             Environment.Exit(CLOSE_APPLICATION_WITHOUT_ERRORS);
-        }
-
-        /*
-
-
-        public static bool CheckComposedWord(string composedWord)
-        {
-            if (composedWord == string.Empty)
-            {
-                Console.WriteLine(Messages.Lose);
-                return false;
-            }
-
-            return CheckCharacters(composedWord);
-        }
-        */
-
-        private static IEnumerable<(char Letter, int Count)> CreateLettersGroup(string word)
-        {
-            return word
-                .GroupBy(c => c)
-                .Select(g => (g.Key, g.Count()));
         }
 
         private Dictionary<char, int> CreateDictionary(string word)
@@ -115,13 +119,13 @@ namespace WordGame2
 
             foreach (char key in word)
             {
-                if (letters.ContainsKey(key))
+                if (!letters.ContainsKey(key))
                 {
-                    letters[key]++;
+                    letters.Add(key, 1);
                 }
                 else
                 {
-                    letters.Add(key, 1);
+                    letters[key]++;
                 }
             }
 
@@ -130,19 +134,13 @@ namespace WordGame2
 
         private bool MatchLetters()
         {
-            //var primaryWordLetters = CreateLettersGroup(_primaryWord);
-            //var composedWordLetters = CreateLettersGroup(ComposedWord);
+            Dictionary<char, int> composedWordLetters = CreateDictionary(_composedWord);
 
-            Dictionary<char, int> composedWordLetters = CreateDictionary(ComposedWord);
-
-            foreach (char key in _primaryWordLetters.Keys)
+            foreach (char key in composedWordLetters.Keys)
             {
-                if (composedWordLetters.ContainsKey(key))
+                if (!_primaryWordLetters.ContainsKey(key) || _primaryWordLetters[key] < composedWordLetters[key])
                 {
-                    if (_primaryWordLetters[key] != composedWordLetters[key])
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
