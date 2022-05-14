@@ -61,6 +61,15 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter first player name:.
+        /// </summary>
+        internal static string FirstPlayerName {
+            get {
+                return ResourceManager.GetString("FirstPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First player&apos;s turn:.
         /// </summary>
         internal static string FirstPlayerTurn {
@@ -142,6 +151,15 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter second player name:.
+        /// </summary>
+        internal static string SecondPlayerName {
+            get {
+                return ResourceManager.GetString("SecondPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Second player&apos;s turn:.
         /// </summary>
         internal static string SecondPlayerTurn {
@@ -160,7 +178,7 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time is over..
+        ///   Looks up a localized string similar to Time is over. The player lost..
         /// </summary>
         internal static string TimerElapsed {
             get {
@@ -178,7 +196,7 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This word has already been used..
+        ///   Looks up a localized string similar to This word has already been used. The player lost..
         /// </summary>
         internal static string WordIsUsed {
             get {

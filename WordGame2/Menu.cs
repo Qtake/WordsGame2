@@ -13,7 +13,7 @@
             _index = 0;
         }
 
-        public int SelectMenuElement()
+        public string SelectMenuElement()
         {
             Console.CursorVisible = false;
 
@@ -29,7 +29,7 @@
                         _index++;
                         break;
                     case ConsoleKey.Enter:
-                        return _index;
+                        return _menuElements[_index];
                 }
                 _index = (_index + _menuElements.Length) % _menuElements.Length;
             }
