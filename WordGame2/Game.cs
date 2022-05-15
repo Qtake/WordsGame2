@@ -14,12 +14,13 @@ namespace WordGame2
         private Stack<string> _usedWords;
         private readonly GameTimer::Timer _timer;
         private readonly List<Player> _players;
+        private readonly Command _commandManager;
 
         private const int CLOSE_APPLICATION_WITHOUT_ERRORS = 0;
         private const double ONE_MINUTE = 60000;
         private const string FILE_NAME = "Players.json";
-        private const int FIRTS_PLAYER_ID = 1;
-        private const int SECOND_PLAYER_ID = 2;
+        private const int FIRTS_PLAYER_ID = 0;
+        private const int SECOND_PLAYER_ID = 1;
 
         public Game()
         {
@@ -29,6 +30,7 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _timer = new GameTimer::Timer();
             _players = new List<Player>();
+            _commandManager = new Command(FILE_NAME, _usedWords, _players);
         }
 
         public void EnterPlayerNames()
@@ -44,7 +46,7 @@ namespace WordGame2
             _players.Add(new Player(SECOND_PLAYER_ID, secondPlayerName));
         }
 
-        private void SavePlayers(int number)
+        private void SaveGameResult(int number)
         {
             string jsonString;
             int value = number % 2 == 0 ? _players[SECOND_PLAYER_ID].WinCount++ : _players[FIRTS_PLAYER_ID].WinCount++;
@@ -101,16 +103,27 @@ namespace WordGame2
             while (true)
             {
                 Console.WriteLine(number % 2 == 0 
-                    ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name 
-                    : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name);
+                    ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
+                    : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
 
                 StartTimer();
                 _composedWord = (Console.ReadLine() ?? "").ToLower();
                 _timer.Stop();
 
+                while(_composedWord.StartsWith('/'))
+                {
+                    _commandManager.ExecuteCommand(_composedWord);
+                    Console.Clear();
+                    Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
+                    Console.WriteLine(number % 2 == 0
+                        ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
+                        : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
+                    _composedWord = (Console.ReadLine() ?? "").ToLower();
+                }
+
                 if (!CheckComposedWord())
                 {
-                    SavePlayers(number);
+                    SaveGameResult(number);
                     break;
                 }
 

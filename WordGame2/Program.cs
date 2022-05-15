@@ -13,7 +13,8 @@ public class Program
         applicationLanguage.SelectLanguage(key);
 
         Game game = new Game();
-
+        game.EnterPlayerNames();
+        game.Start();
 
         
        // game.EnterPlayerNames();

@@ -171,6 +171,9 @@
   <data name="TotalScore" xml:space="preserve">
     <value>Общий счет:</value>
   </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Неизвестная команда</value>
+  </data>
   <data name="UsedWords" xml:space="preserve">
     <value>Список использованных слов:</value>
   </data>

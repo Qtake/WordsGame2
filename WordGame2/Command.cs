@@ -15,8 +15,8 @@ namespace WordGame2
         {
             _reports = new Dictionary<string, Report>()
             {
-                { "/show-words", new Report(ShowWords) },
-                { "/score", new Report(Score) },
+                { "/show-words",  new Report(ShowWords) },
+                { "/score",       new Report(Score) },
                 { "/total-score", new Report(TotalScore) },
             };
             _fileName = fileName;
@@ -78,15 +78,19 @@ namespace WordGame2
 
         public void ExecuteCommand(string command)
         {
+            Console.Clear();
+            
             if (_reports.ContainsKey(command))
             {
                 _reports[command].Invoke();
             }
             else
             {
-                Console.WriteLine("LOX");
+                Console.WriteLine(Messages.UnknownCommand);
             }
 
+            Console.WriteLine(Messages.KeyToContinue);
+            Console.ReadKey();
         }
     }
 }

@@ -223,6 +223,15 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown command.
+        /// </summary>
+        internal static string UnknownCommand {
+            get {
+                return ResourceManager.GetString("UnknownCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List of used words:.
         /// </summary>
         internal static string UsedWords {
