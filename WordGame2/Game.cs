@@ -105,6 +105,8 @@ namespace WordGame2
                     ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
                     : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
 
+                AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+
                 StartTimer();
                 _composedWord = (Console.ReadLine() ?? "").ToLower();
                 _timer.Stop();
@@ -235,6 +237,11 @@ namespace WordGame2
         {
             Console.WriteLine(Messages.TimerElapsed);
             Environment.Exit(CLOSE_APPLICATION_WITHOUT_ERRORS);
+        }
+
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            SaveGameResult();
         }
     }
 }
