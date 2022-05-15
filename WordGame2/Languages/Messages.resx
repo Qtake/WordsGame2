@@ -117,11 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FileEmpty" xml:space="preserve">
+    <value>No players who have played before.</value>
+  </data>
   <data name="FirstPlayerName" xml:space="preserve">
     <value>Enter first player name:</value>
-  </data>
-  <data name="FirstPlayerTurn" xml:space="preserve">
-    <value>First player's turn:</value>
   </data>
   <data name="IncorectCompose" xml:space="preserve">
     <value>The word composed incrorectly. The player lost.</value>
@@ -138,6 +138,15 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="NoScore" xml:space="preserve">
+    <value>You have never played.</value>
+  </data>
+  <data name="PlayerName" xml:space="preserve">
+    <value>Player name: </value>
+  </data>
+  <data name="PlayerTurn" xml:space="preserve">
+    <value>First player's turn:</value>
+  </data>
   <data name="PrimaryWordInput" xml:space="preserve">
     <value>Enter the main word:</value>
   </data>
@@ -147,17 +156,26 @@
   <data name="Restart" xml:space="preserve">
     <value>Want to play again?</value>
   </data>
+  <data name="Score" xml:space="preserve">
+    <value>Your score:</value>
+  </data>
   <data name="SecondPlayerName" xml:space="preserve">
     <value>Enter second player name:</value>
-  </data>
-  <data name="SecondPlayerTurn" xml:space="preserve">
-    <value>Second player's turn:</value>
   </data>
   <data name="SelectLanguage" xml:space="preserve">
     <value>Choose language:</value>
   </data>
   <data name="TimerElapsed" xml:space="preserve">
     <value>Time is over. The player lost.</value>
+  </data>
+  <data name="TotalScore" xml:space="preserve">
+    <value>Total score:</value>
+  </data>
+  <data name="UsedWords" xml:space="preserve">
+    <value>List of used words:</value>
+  </data>
+  <data name="WinsNumber" xml:space="preserve">
+    <value> Number of wins: </value>
   </data>
   <data name="WordCharactersError" xml:space="preserve">
     <value>The word must contain only English letters.</value>

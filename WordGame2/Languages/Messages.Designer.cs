@@ -61,20 +61,20 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No players who have played before..
+        /// </summary>
+        internal static string FileEmpty {
+            get {
+                return ResourceManager.GetString("FileEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter first player name:.
         /// </summary>
         internal static string FirstPlayerName {
             get {
                 return ResourceManager.GetString("FirstPlayerName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First player&apos;s turn:.
-        /// </summary>
-        internal static string FirstPlayerTurn {
-            get {
-                return ResourceManager.GetString("FirstPlayerTurn", resourceCulture);
             }
         }
         
@@ -124,6 +124,33 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have never played..
+        /// </summary>
+        internal static string NoScore {
+            get {
+                return ResourceManager.GetString("NoScore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player name: .
+        /// </summary>
+        internal static string PlayerName {
+            get {
+                return ResourceManager.GetString("PlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First player&apos;s turn:.
+        /// </summary>
+        internal static string PlayerTurn {
+            get {
+                return ResourceManager.GetString("PlayerTurn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter the main word:.
         /// </summary>
         internal static string PrimaryWordInput {
@@ -151,20 +178,20 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your score:.
+        /// </summary>
+        internal static string Score {
+            get {
+                return ResourceManager.GetString("Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter second player name:.
         /// </summary>
         internal static string SecondPlayerName {
             get {
                 return ResourceManager.GetString("SecondPlayerName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Second player&apos;s turn:.
-        /// </summary>
-        internal static string SecondPlayerTurn {
-            get {
-                return ResourceManager.GetString("SecondPlayerTurn", resourceCulture);
             }
         }
         
@@ -183,6 +210,33 @@ namespace WordGame2.Languages {
         internal static string TimerElapsed {
             get {
                 return ResourceManager.GetString("TimerElapsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total score:.
+        /// </summary>
+        internal static string TotalScore {
+            get {
+                return ResourceManager.GetString("TotalScore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of used words:.
+        /// </summary>
+        internal static string UsedWords {
+            get {
+                return ResourceManager.GetString("UsedWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Number of wins: .
+        /// </summary>
+        internal static string WinsNumber {
+            get {
+                return ResourceManager.GetString("WinsNumber", resourceCulture);
             }
         }
         

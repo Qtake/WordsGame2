@@ -15,12 +15,11 @@ namespace WordGame2
         private readonly GameTimer::Timer _timer;
         private readonly List<Player> _players;
 
-        private delegate void Report();
-        private readonly Dictionary<string, Report> _reports;
-
         private const int CLOSE_APPLICATION_WITHOUT_ERRORS = 0;
         private const double ONE_MINUTE = 60000;
-        private const string USED_WORDS_FILE = @"C:\Users\grant\source\repos\Qtake\WordsGame2\UsedWords";
+        private const string FILE_NAME = "Players.json";
+        private const int FIRTS_PLAYER_ID = 1;
+        private const int SECOND_PLAYER_ID = 2;
 
         public Game()
         {
@@ -30,41 +29,6 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _timer = new GameTimer::Timer();
             _players = new List<Player>();
-
-            _reports = new Dictionary<string, Report>()
-            {
-                { "/show-words", new Report(ShowWords) },
-                { "/score", new Report(Score) },
-                { "/total-score", new Report(TotalScore) },
-            };
-        }
-
-        private void ShowWords()
-        {
-            Console.WriteLine("ShowWords");
-        }
-
-        private void Score()
-        {
-            Console.WriteLine("Score");
-        }
-
-        private void TotalScore()
-        {
-            Console.WriteLine("TotalScore");
-        }
-
-        public void ExecuteCommand(string command)
-        {
-            if (_reports.ContainsKey(command))
-            {
-                _reports[command].Invoke();
-            }
-            else
-            {
-                Console.WriteLine("LOX");
-            }
-
         }
 
         public void EnterPlayerNames()
@@ -73,11 +37,45 @@ namespace WordGame2
 
             Console.WriteLine(Messages.FirstPlayerName);
             string firstPlayerName = Console.ReadLine() ?? "Player1";
-            _players.Add(new Player(firstPlayerName));
+            _players.Add(new Player(FIRTS_PLAYER_ID, firstPlayerName));
 
             Console.WriteLine("\n" + Messages.SecondPlayerName);
             string secondPlayerName = Console.ReadLine() ?? "Player2";
-            _players.Add(new Player(secondPlayerName));
+            _players.Add(new Player(SECOND_PLAYER_ID, secondPlayerName));
+        }
+
+        private void SavePlayers(int number)
+        {
+            string jsonString;
+            int value = number % 2 == 0 ? _players[SECOND_PLAYER_ID].WinCount++ : _players[FIRTS_PLAYER_ID].WinCount++;
+
+            if (File.Exists(FILE_NAME))
+            {
+                string fileText = File.ReadAllText(FILE_NAME);
+                Player[] allPlayers = JsonSerializer.Deserialize<Player[]>(fileText);
+                string[] currentPlayerNames = _players.Select(x => x.Name).ToArray();
+                Player[] matchedPlayers = allPlayers.Where(x => currentPlayerNames.Contains(x.Name)).ToArray();
+                Player[] otherPlayers = allPlayers.Where(x => !currentPlayerNames.Contains(x.Name)).ToArray();
+
+                foreach (Player a in matchedPlayers)
+                {
+                    foreach (Player b in _players)
+                    {
+                        if (a.Name == b.Name)
+                        {
+                            a.WinCount += b.WinCount;
+                        }
+                    }
+                }
+
+                jsonString = JsonSerializer.Serialize(matchedPlayers.Concat(otherPlayers).ToArray());
+            }
+            else
+            {
+                jsonString = JsonSerializer.Serialize(_players);
+            }
+
+            File.WriteAllText(FILE_NAME, jsonString);
         }
 
         public void Start()
@@ -102,13 +100,17 @@ namespace WordGame2
 
             while (true)
             {
-                Console.WriteLine(number % 2 == 0 ? "\n" + Messages.FirstPlayerTurn : "\n" + Messages.SecondPlayerTurn);
+                Console.WriteLine(number % 2 == 0 
+                    ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name 
+                    : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name);
+
                 StartTimer();
                 _composedWord = (Console.ReadLine() ?? "").ToLower();
                 _timer.Stop();
 
                 if (!CheckComposedWord())
                 {
+                    SavePlayers(number);
                     break;
                 }
 
