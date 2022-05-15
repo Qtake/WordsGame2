@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using WordGame2.Languages;
 using GameTimer = System.Timers;
 
-
 namespace WordGame2
 {
     internal class Game
@@ -14,6 +13,7 @@ namespace WordGame2
         private Stack<string> _usedWords;
         private readonly GameTimer::Timer _timer;
         private readonly List<Player> _players;
+        private int _playerNumber;
         private readonly Command _commandManager;
 
         private const int CLOSE_APPLICATION_WITHOUT_ERRORS = 0;
@@ -30,6 +30,7 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _timer = new GameTimer::Timer();
             _players = new List<Player>();
+            _playerNumber = 0;
             _commandManager = new Command(FILE_NAME, _usedWords, _players);
         }
 
@@ -46,10 +47,10 @@ namespace WordGame2
             _players.Add(new Player(SECOND_PLAYER_ID, secondPlayerName));
         }
 
-        private void SaveGameResult(int number)
+        private void SaveGameResult()
         {
             string jsonString;
-            int value = number % 2 == 0 ? _players[SECOND_PLAYER_ID].WinCount++ : _players[FIRTS_PLAYER_ID].WinCount++;
+            int value = _playerNumber % 2 == 0 ? _players[SECOND_PLAYER_ID].WinCount++ : _players[FIRTS_PLAYER_ID].WinCount++;
 
             if (File.Exists(FILE_NAME))
             {
@@ -83,8 +84,6 @@ namespace WordGame2
 
         public void Start()
         {
-            Console.WriteLine();
-
             Console.Clear();
             Console.WriteLine(Messages.PrimaryWordInput);
             _primaryWord = (Console.ReadLine() ?? "").ToLower();
@@ -99,11 +98,10 @@ namespace WordGame2
 
             _usedWords.Push(_primaryWord);
             _primaryWordLetters = CreateDictionary(_primaryWord);
-            int number = 0;
 
             while (true)
             {
-                Console.WriteLine(number % 2 == 0 
+                Console.WriteLine(_playerNumber % 2 == 0 
                     ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
                     : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
 
@@ -116,7 +114,7 @@ namespace WordGame2
                     _commandManager.Execute(_composedWord);
                     Console.Clear();
                     Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
-                    Console.WriteLine(number % 2 == 0
+                    Console.WriteLine(_playerNumber % 2 == 0
                         ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
                         : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
                     _composedWord = (Console.ReadLine() ?? "").ToLower();
@@ -124,12 +122,12 @@ namespace WordGame2
 
                 if (!CheckComposedWord())
                 {
-                    SaveGameResult(number);
+                    SaveGameResult();
                     break;
                 }
 
                 _usedWords.Push(_composedWord);
-                number++;
+                _playerNumber++;
             }
 
             _timer.Elapsed -= TimerElapsed;

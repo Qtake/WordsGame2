@@ -1,12 +1,10 @@
-﻿using System.Text.Json;
-using WordGame2;
+﻿using WordGame2;
 using WordGame2.Languages;
 
 public class Program
 {
     public static void Main()
     {
-
         Language applicationLanguage = new Language();
         Menu languagesMenu = new Menu(applicationLanguage.Languages.Keys.ToArray(), Messages.SelectLanguage);
         string key = languagesMenu.SelectMenuElement();
