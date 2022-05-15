@@ -21,6 +21,8 @@ namespace WordGame2
         private const string FILE_NAME = "Players.json";
         private const int FIRTS_PLAYER_ID = 0;
         private const int SECOND_PLAYER_ID = 1;
+        private const int EIGHT_CHARACTERS = 8;
+        private const int THIRTY_CHARACTERS = 30;
 
         public Game()
         {
@@ -138,7 +140,7 @@ namespace WordGame2
 
         private bool CheckPrimaryWord()
         {
-            if ((_primaryWord?.Length is < 8 or > 30) || _primaryWord == string.Empty)
+            if ((_primaryWord?.Length is < EIGHT_CHARACTERS or > THIRTY_CHARACTERS) || _primaryWord == string.Empty)
             {
                 Console.WriteLine(Messages.WordLengthError + "\n" + Messages.KeyToContinue);
                 return false;
