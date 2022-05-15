@@ -76,7 +76,7 @@ namespace WordGame2
             }
         }
 
-        public void ExecuteCommand(string command)
+        public void Execute(string command)
         {
             Console.Clear();
             

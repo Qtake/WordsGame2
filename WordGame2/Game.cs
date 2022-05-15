@@ -58,6 +58,7 @@ namespace WordGame2
                 string[] currentPlayerNames = _players.Select(x => x.Name).ToArray();
                 Player[] matchedPlayers = allPlayers.Where(x => currentPlayerNames.Contains(x.Name)).ToArray();
                 Player[] otherPlayers = allPlayers.Where(x => !currentPlayerNames.Contains(x.Name)).ToArray();
+                Player[] newPlayers = _players.Where(x => !allPlayers.Select(x => x.Name).Contains(x.Name)).ToArray();
 
                 foreach (Player a in matchedPlayers)
                 {
@@ -70,7 +71,7 @@ namespace WordGame2
                     }
                 }
 
-                jsonString = JsonSerializer.Serialize(matchedPlayers.Concat(otherPlayers).ToArray());
+                jsonString = JsonSerializer.Serialize(matchedPlayers.Concat(otherPlayers).Concat(newPlayers).ToArray());
             }
             else
             {
@@ -112,7 +113,7 @@ namespace WordGame2
 
                 while(_composedWord.StartsWith('/'))
                 {
-                    _commandManager.ExecuteCommand(_composedWord);
+                    _commandManager.Execute(_composedWord);
                     Console.Clear();
                     Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
                     Console.WriteLine(number % 2 == 0
@@ -143,7 +144,7 @@ namespace WordGame2
                 return false;
             }
 
-            if (!Regex.IsMatch(_primaryWord, Messages.LettersRegex))
+            if (!Regex.IsMatch(_primaryWord ?? "", Messages.LettersRegex))
             {
                 Console.WriteLine(Messages.WordCharactersError + "\n" + Messages.KeyToContinue);
                 return false;

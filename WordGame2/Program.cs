@@ -15,13 +15,5 @@ public class Program
         Game game = new Game();
         game.EnterPlayerNames();
         game.Start();
-
-        
-       // game.EnterPlayerNames();
-        //game.SavePlayers();
-
-
-        //string[] des = JsonSerializer.Deserialize<string[]>(s);
-        
     }
 }
