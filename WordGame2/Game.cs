@@ -92,6 +92,7 @@ namespace WordGame2
 
             if (!CheckPrimaryWord())
             {
+                Console.WriteLine("\n" + Messages.KeyToContinue);
                 Restart();
             }
 
@@ -126,6 +127,7 @@ namespace WordGame2
 
                 if (!CheckComposedWord())
                 {
+                    Console.WriteLine("\n" + Messages.KeyToContinue);
                     SaveGameResult();
                     break;
                 }
@@ -134,6 +136,7 @@ namespace WordGame2
                 _playerNumber++;
             }
 
+            AppDomain.CurrentDomain.ProcessExit -= CurrentDomain_ProcessExit;
             _timer.Elapsed -= TimerElapsed;
             Restart();
         }
@@ -142,13 +145,13 @@ namespace WordGame2
         {
             if ((_primaryWord?.Length is < EIGHT_CHARACTERS or > THIRTY_CHARACTERS) || _primaryWord == string.Empty)
             {
-                Console.WriteLine(Messages.WordLengthError + "\n" + Messages.KeyToContinue);
+                Console.WriteLine(Messages.WordLengthError);
                 return false;
             }
 
             if (!Regex.IsMatch(_primaryWord ?? "", Messages.LettersRegex))
             {
-                Console.WriteLine(Messages.WordCharactersError + "\n" + Messages.KeyToContinue);
+                Console.WriteLine(Messages.WordCharactersError);
                 return false;
             }
 
@@ -159,19 +162,19 @@ namespace WordGame2
         {
             if (_composedWord == string.Empty || !Regex.IsMatch(_composedWord, Messages.LettersRegex))
             {
-                Console.WriteLine(Messages.IncorectCompose + "\n" + Messages.KeyToContinue);
+                Console.WriteLine(Messages.IncorectCompose);
                 return false;
             }
 
             if (!MatchLetters())
             {
-                Console.WriteLine(Messages.IncorectCompose + "\n" + Messages.KeyToContinue);
+                Console.WriteLine(Messages.IncorectCompose);
                 return false;
             }
 
             if (_usedWords.Contains(_composedWord))
             {
-                Console.WriteLine(Messages.WordIsUsed + "\n" + Messages.KeyToContinue);
+                Console.WriteLine(Messages.WordIsUsed);
                 return false;
             }
             
@@ -216,6 +219,8 @@ namespace WordGame2
         {
             Console.ReadKey();
             _usedWords.Clear();
+            _players[FIRTS_PLAYER_ID].WinCount = 0;
+            _players[SECOND_PLAYER_ID].WinCount = 0;
             string[] menuElements = { Messages.Yes, Messages.No };
             Menu confirmMenu = new Menu(menuElements, Messages.Restart);
             string element = confirmMenu.SelectMenuElement();
