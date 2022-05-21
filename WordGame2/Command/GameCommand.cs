@@ -13,9 +13,9 @@
 
         public void Execute()
         {
-            if (_game._commands.ContainsKey(_command))
+            if (_game.Commands.ContainsKey(_command))
             {
-                _game._commands[_command].Invoke();
+                _game.Commands[_command].Invoke();
             }
         }
     }

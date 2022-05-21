@@ -8,7 +8,7 @@ namespace WordGame2
 {
     internal class Game
     {
-        public Dictionary<string, Action> _commands { get; private set; }
+        public Dictionary<string, Action> Commands { get; private set; }
 
         private string _primaryWord;
         private Dictionary<char, int> _primaryWordLetters;
@@ -20,11 +20,11 @@ namespace WordGame2
         private const int MinWordLength = 8;
         private const int MaxWordLength = 30;
         private const int MinPlayerCount = 2;
-        private const int InitialTimerValue = 20000;
+        private const int InitialTimerValue = 10000;
 
         public Game()
         {
-            _commands = new Dictionary<string, Action>()
+            Commands = new Dictionary<string, Action>()
             {
                 { "/show-words", ShowUsedWords },
                 { "/score", ShowScore },
@@ -35,8 +35,10 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _players = new Queue<Player>();
             _usedWords = new List<string>();
-            _timer = new GameTimer::Timer();
-            _timer.Interval = InitialTimerValue;
+            _timer = new GameTimer::Timer
+            {
+                Interval = InitialTimerValue
+            };
             _timer.Elapsed += TimerElapsed;
             _dataManager = new FileManager("Players.json");
         }
@@ -56,7 +58,7 @@ namespace WordGame2
 
             for (int i = 1; i < playerCount + 1; i++)
             {
-                Console.WriteLine(Message.InputPlayerName + $"{i}:");
+                Console.WriteLine("\n" + Message.InputPlayerName + $" {i}:");
                 playerName = Console.ReadLine() ?? $"Player {i}";
 
                 if (_players.Select(x => x.Name).Contains(playerName))
@@ -281,7 +283,6 @@ namespace WordGame2
         private void TimerElapsed(object sender, GameTimer::ElapsedEventArgs e)
         {
             Console.WriteLine(Message.TimerElapsed);
-            Console.WriteLine("");
             _timer.Stop();
         }
     }
