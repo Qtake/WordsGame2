@@ -1,4 +1,4 @@
-﻿namespace WordGame2
+﻿namespace WordGame2.Other
 {
     internal class Menu
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WordGame2.Languages {
+namespace WordGame2.Messages {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace WordGame2.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Messages {
+    internal class Message {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Messages() {
+        internal Message() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace WordGame2.Languages {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WordGame2.Languages.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WordGame2.Messages.Message", typeof(Message).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -84,6 +84,33 @@ namespace WordGame2.Languages {
         internal static string IncorectCompose {
             get {
                 return ResourceManager.GetString("IncorectCompose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The entered value must be a number greater than one..
+        /// </summary>
+        internal static string IncorrectPlayerCount {
+            get {
+                return ResourceManager.GetString("IncorrectPlayerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter players number: .
+        /// </summary>
+        internal static string InputPlayerCount {
+            get {
+                return ResourceManager.GetString("InputPlayerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the player name under the number .
+        /// </summary>
+        internal static string InputPlayerName {
+            get {
+                return ResourceManager.GetString("InputPlayerName", resourceCulture);
             }
         }
         
@@ -142,7 +169,7 @@ namespace WordGame2.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First player&apos;s turn:.
+        ///   Looks up a localized string similar to The turn of the player named .
         /// </summary>
         internal static string PlayerTurn {
             get {
@@ -165,6 +192,15 @@ namespace WordGame2.Languages {
         internal static string PrimaryWordOutput {
             get {
                 return ResourceManager.GetString("PrimaryWordOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player names must not be repeated..
+        /// </summary>
+        internal static string RepeatedName {
+            get {
+                return ResourceManager.GetString("RepeatedName", resourceCulture);
             }
         }
         

@@ -1,187 +1,165 @@
-﻿using System.Text.Json;
-using System.Text.RegularExpressions;
-using WordGame2.Languages;
+﻿using System.Text.RegularExpressions;
+using WordGame2.Command;
+using WordGame2.DataManagers;
+using WordGame2.Messages;
 using GameTimer = System.Timers;
 
 namespace WordGame2
 {
     internal class Game
     {
-        private string _composedWord;
+        public Dictionary<string, Action> _commands { get; private set; }
+
         private string _primaryWord;
         private Dictionary<char, int> _primaryWordLetters;
-        private Stack<string> _usedWords;
+        private readonly Queue<Player> _players;
+        private readonly List<string> _usedWords;
         private readonly GameTimer::Timer _timer;
-        private readonly List<Player> _players;
-        private int _playerNumber;
-        private readonly Command _commandManager;
+        private readonly IDataManager _dataManager;
 
-        private const int CLOSE_APPLICATION_WITHOUT_ERRORS = 0;
-        private const double ONE_MINUTE = 60000;
-        private const string FILE_NAME = "Players.json";
-        private const int FIRTS_PLAYER_ID = 0;
-        private const int SECOND_PLAYER_ID = 1;
-        private const int EIGHT_CHARACTERS = 8;
-        private const int THIRTY_CHARACTERS = 30;
+        private const int MinWordLength = 8;
+        private const int MaxWordLength = 30;
+        private const int MinPlayerCount = 2;
+        private const int InitialTimerValue = 20000;
 
         public Game()
         {
-            _composedWord = string.Empty;
+            _commands = new Dictionary<string, Action>()
+            {
+                { "/show-words", ShowUsedWords },
+                { "/score", ShowScore },
+                { "/total-score", ShowTotalScore }
+            };
+
             _primaryWord = string.Empty;
-            _usedWords = new Stack<string>();
             _primaryWordLetters = new Dictionary<char, int>();
+            _players = new Queue<Player>();
+            _usedWords = new List<string>();
             _timer = new GameTimer::Timer();
-            _players = new List<Player>();
-            _playerNumber = 0;
-            _commandManager = new Command(FILE_NAME, _usedWords, _players);
+            _timer.Interval = InitialTimerValue;
+            _timer.Elapsed += TimerElapsed;
+            _dataManager = new FileManager("Players.json");
         }
 
-        public void EnterPlayerNames()
+        public bool EnterPlayerNames()
         {
             Console.Clear();
+            Console.WriteLine(Message.InputPlayerCount);
+            bool isConverted = int.TryParse(Console.ReadLine(), out int playerCount);
+            string playerName;
 
-            Console.WriteLine(Messages.FirstPlayerName);
-            string firstPlayerName = Console.ReadLine() ?? "Player1";
-            _players.Add(new Player(FIRTS_PLAYER_ID, firstPlayerName));
-
-            Console.WriteLine("\n" + Messages.SecondPlayerName);
-            string secondPlayerName = Console.ReadLine() ?? "Player2";
-            _players.Add(new Player(SECOND_PLAYER_ID, secondPlayerName));
-        }
-
-        private void SaveGameResult()
-        {
-            string jsonString;
-            int value = _playerNumber % 2 == 0 ? _players[SECOND_PLAYER_ID].WinCount++ : _players[FIRTS_PLAYER_ID].WinCount++;
-
-            if (File.Exists(FILE_NAME))
+            if (!isConverted || playerCount < MinPlayerCount)
             {
-                string fileText = File.ReadAllText(FILE_NAME);
-                Player[] allPlayers = JsonSerializer.Deserialize<Player[]>(fileText);
-                string[] currentPlayerNames = _players.Select(x => x.Name).ToArray();
-                Player[] matchedPlayers = allPlayers.Where(x => currentPlayerNames.Contains(x.Name)).ToArray();
-                Player[] otherPlayers = allPlayers.Where(x => !currentPlayerNames.Contains(x.Name)).ToArray();
-                Player[] newPlayers = _players.Where(x => !allPlayers.Select(x => x.Name).Contains(x.Name)).ToArray();
+                Console.WriteLine(Message.IncorrectPlayerCount);
+                return false;
+            }
 
-                foreach (Player a in matchedPlayers)
+            for (int i = 1; i < playerCount + 1; i++)
+            {
+                Console.WriteLine(Message.InputPlayerName + $"{i}:");
+                playerName = Console.ReadLine() ?? $"Player {i}";
+
+                if (_players.Select(x => x.Name).Contains(playerName))
                 {
-                    foreach (Player b in _players)
-                    {
-                        if (a.Name == b.Name)
-                        {
-                            a.WinCount += b.WinCount;
-                        }
-                    }
+                    Console.WriteLine(Message.RepeatedName);
+                    return false;
                 }
 
-                jsonString = JsonSerializer.Serialize(matchedPlayers.Concat(otherPlayers).Concat(newPlayers).ToArray());
-            }
-            else
-            {
-                jsonString = JsonSerializer.Serialize(_players);
+                _players.Enqueue(new Player(playerName));
             }
 
-            File.WriteAllText(FILE_NAME, jsonString);
+            return true;
         }
 
         public void Start()
         {
-            Console.Clear();
-            Console.WriteLine(Messages.PrimaryWordInput);
-            _primaryWord = (Console.ReadLine() ?? "").ToLower();
-
-            if (!CheckPrimaryWord())
+            if (!InputPrimaryWord())
             {
-                Console.WriteLine("\n" + Messages.KeyToContinue);
-                Restart();
+                WaitAnyKey();
+                return;
             }
 
-            Console.Clear();
-            Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
+            _usedWords.Add(_primaryWord);
+            _primaryWordLetters = GroupingByLetters(_primaryWord);
+            ShowPrimaryWord();
+            
 
-            _usedWords.Push(_primaryWord);
-            _primaryWordLetters = CreateDictionary(_primaryWord);
-
-            while (true)
+            while (_players.Count > 1)
             {
-                Console.WriteLine(_playerNumber % 2 == 0 
-                    ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
-                    : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
-
-                AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
-
-                StartTimer();
-                _composedWord = (Console.ReadLine() ?? "").ToLower();
+                ShowCurrentPlayerName(_players.Peek().Name);
+                _timer.Start();
+                string word = InputComposedWord();
                 _timer.Stop();
 
-                while(_composedWord.StartsWith('/'))
+                while (word.StartsWith('/'))
                 {
-                    _commandManager.Execute(_composedWord);
-                    Console.Clear();
-                    Console.WriteLine(Messages.PrimaryWordOutput + _primaryWord);
-                    Console.WriteLine(_playerNumber % 2 == 0
-                        ? "\n" + Messages.PlayerTurn + _players[FIRTS_PLAYER_ID].Name + ":"
-                        : "\n" + Messages.PlayerTurn + _players[SECOND_PLAYER_ID].Name + ":");
-                    _composedWord = (Console.ReadLine() ?? "").ToLower();
+                    CommandActivator activator = new CommandActivator();
+                    activator.SetCommand(new GameCommand(this, word));
+                    activator.ActivateCommand();
+                    WaitAnyKey();
+                    ShowPrimaryWord();
+                    ShowCurrentPlayerName(_players.Peek().Name);
+                    word = InputComposedWord();
                 }
 
-                if (!CheckComposedWord())
-                {
-                    Console.WriteLine("\n" + Messages.KeyToContinue);
-                    SaveGameResult();
-                    break;
-                }
+                Player currentPlayer = _players.Dequeue();
 
-                _usedWords.Push(_composedWord);
-                _playerNumber++;
+                if (CheckComposedWord(word))
+                {
+                    _players.Enqueue(currentPlayer);
+                    _usedWords.Add(word);
+                }
             }
 
-            AppDomain.CurrentDomain.ProcessExit -= CurrentDomain_ProcessExit;
+            _dataManager.WriteData(_players.Peek().Name);
             _timer.Elapsed -= TimerElapsed;
-            Restart();
         }
 
-        private bool CheckPrimaryWord()
+        private bool InputPrimaryWord()
         {
-            if ((_primaryWord?.Length is < EIGHT_CHARACTERS or > THIRTY_CHARACTERS) || _primaryWord == string.Empty)
+            Console.Clear();
+            Console.WriteLine(Message.PrimaryWordInput);
+            _primaryWord = (Console.ReadLine() ?? "").ToLower();
+
+            if ((_primaryWord?.Length is < MinWordLength or > MaxWordLength) || _primaryWord == string.Empty)
             {
-                Console.WriteLine(Messages.WordLengthError);
+                Console.WriteLine(Message.WordLengthError);
                 return false;
             }
 
-            if (!Regex.IsMatch(_primaryWord ?? "", Messages.LettersRegex))
+            if (!Regex.IsMatch(_primaryWord ?? "", Message.LettersRegex))
             {
-                Console.WriteLine(Messages.WordCharactersError);
+                Console.WriteLine(Message.WordCharactersError);
                 return false;
             }
 
             return true;
         }
 
-        private bool CheckComposedWord()
+        private bool CheckComposedWord(string composedWord)
         {
-            if (_composedWord == string.Empty || !Regex.IsMatch(_composedWord, Messages.LettersRegex))
+            if (composedWord == string.Empty || !Regex.IsMatch(composedWord, Message.LettersRegex))
             {
-                Console.WriteLine(Messages.IncorectCompose);
+                Console.WriteLine(Message.IncorectCompose);
                 return false;
             }
 
-            if (!MatchLetters())
+            if (!MatchLetters(composedWord))
             {
-                Console.WriteLine(Messages.IncorectCompose);
+                Console.WriteLine(Message.IncorectCompose);
                 return false;
             }
 
-            if (_usedWords.Contains(_composedWord))
+            if (_usedWords.Contains(composedWord))
             {
-                Console.WriteLine(Messages.WordIsUsed);
+                Console.WriteLine(Message.WordIsUsed);
                 return false;
             }
             
             return true;
         }
 
-        private Dictionary<char, int> CreateDictionary(string word)
+        private static Dictionary<char, int> GroupingByLetters(string word)
         {
             Dictionary<char, int> letters = new Dictionary<char, int>();
 
@@ -200,9 +178,9 @@ namespace WordGame2
             return letters;
         }
 
-        private bool MatchLetters()
+        private bool MatchLetters(string composedWord)
         {
-            Dictionary<char, int> composedWordLetters = CreateDictionary(_composedWord);
+            Dictionary<char, int> composedWordLetters = GroupingByLetters(composedWord);
 
             foreach (char key in composedWordLetters.Keys)
             {
@@ -215,40 +193,96 @@ namespace WordGame2
             return true;
         }
 
-        private void Restart()
+        private void ShowPrimaryWord()
         {
-            Console.ReadKey();
-            _usedWords.Clear();
-            _players[FIRTS_PLAYER_ID].WinCount = 0;
-            _players[SECOND_PLAYER_ID].WinCount = 0;
-            string[] menuElements = { Messages.Yes, Messages.No };
-            Menu confirmMenu = new Menu(menuElements, Messages.Restart);
-            string element = confirmMenu.SelectMenuElement();
-
-            if (element == Messages.Yes)
-            {
-                Start();
-            }
-
-            Environment.Exit(CLOSE_APPLICATION_WITHOUT_ERRORS);
+            Console.Clear();
+            Console.WriteLine(Message.PrimaryWordOutput + _primaryWord);
         }
 
-        private void StartTimer()
+        private static void WaitAnyKey()
         {
-            _timer.Interval = ONE_MINUTE;
-            _timer.Elapsed += TimerElapsed;
-            _timer.Start();
+            Console.WriteLine("\n" + Message.KeyToContinue);
+            Console.ReadKey();
+        }
+
+        private static void ShowCurrentPlayerName(string playerName)
+        {
+            Console.WriteLine("\n" + Message.PlayerTurn + $"{playerName}:");
+        }
+
+        private static string InputComposedWord()
+        {
+            return (Console.ReadLine() ?? "").ToLower();
+        }
+
+        private void ShowUsedWords()
+        {
+            Console.Clear();
+            Console.WriteLine(Message.UsedWords);
+
+            foreach (string word in _usedWords)
+            {
+                Console.WriteLine(word);
+            }
+        }
+
+        private static void ShowStatistics(Player player)
+        {
+            Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
+        }
+
+        private void ShowScore()
+        {
+            List<Player>? previousPlayers = _dataManager.ReadData();
+
+            if (previousPlayers == null)
+            {
+                Console.WriteLine(Message.NoScore);
+                return;
+            }
+
+            Player[] matchedPlayers = previousPlayers
+                .Where(x => _players.Select(x => x.Name)
+                .Contains(x.Name))
+                .ToArray();
+
+            if (matchedPlayers.Length == 0)
+            {
+                Console.WriteLine(Message.NoScore);
+                return;
+            }
+
+            Console.WriteLine(Message.Score);
+
+            foreach (Player player in matchedPlayers)
+            {
+                ShowStatistics(player);
+            }
+        }
+
+        private void ShowTotalScore()
+        {
+            List<Player>? previousPlayers = _dataManager.ReadData();
+
+            if (previousPlayers == null)
+            {
+                Console.WriteLine(Message.FileEmpty);
+                return;
+            }
+
+            Console.WriteLine(Message.TotalScore);
+
+            foreach (Player player in previousPlayers)
+            {
+                ShowStatistics(player);
+            }
         }
 
         private void TimerElapsed(object sender, GameTimer::ElapsedEventArgs e)
         {
-            Console.WriteLine(Messages.TimerElapsed);
-            Environment.Exit(CLOSE_APPLICATION_WITHOUT_ERRORS);
-        }
-
-        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
-        {
-            SaveGameResult();
+            Console.WriteLine(Message.TimerElapsed);
+            Console.WriteLine("");
+            _timer.Stop();
         }
     }
 }
