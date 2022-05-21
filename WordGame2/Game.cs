@@ -272,7 +272,7 @@ namespace WordGame2
             ShowStatistics(previousPlayers);
         }
 
-        private void TimerElapsed(object sender, GameTimer::ElapsedEventArgs e)
+        private void TimerElapsed(object? sender, GameTimer::ElapsedEventArgs e)
         {
             Console.WriteLine(Message.TimerElapsed);
             _timer.Stop();
