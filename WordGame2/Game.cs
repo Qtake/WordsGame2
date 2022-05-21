@@ -35,10 +35,7 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _players = new Queue<Player>();
             _usedWords = new List<string>();
-            _timer = new GameTimer::Timer
-            {
-                Interval = InitialTimerValue
-            };
+            _timer = new GameTimer::Timer { Interval = InitialTimerValue };
             _timer.Elapsed += TimerElapsed;
             _dataManager = new FileManager("Players.json");
         }
@@ -228,9 +225,12 @@ namespace WordGame2
             }
         }
 
-        private static void ShowStatistics(Player player)
+        private static void ShowStatistics(List<Player> players)
         {
-            Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
+            foreach (Player player in players)
+            {
+                Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
+            }
         }
 
         private void ShowScore()
@@ -243,23 +243,19 @@ namespace WordGame2
                 return;
             }
 
-            Player[] matchedPlayers = previousPlayers
+            List<Player> matchedPlayers = previousPlayers
                 .Where(x => _players.Select(x => x.Name)
                 .Contains(x.Name))
-                .ToArray();
+                .ToList();
 
-            if (matchedPlayers.Length == 0)
+            if (matchedPlayers.Count == 0)
             {
                 Console.WriteLine(Message.NoScore);
                 return;
             }
 
             Console.WriteLine(Message.Score);
-
-            foreach (Player player in matchedPlayers)
-            {
-                ShowStatistics(player);
-            }
+            ShowStatistics(matchedPlayers);
         }
 
         private void ShowTotalScore()
@@ -273,11 +269,7 @@ namespace WordGame2
             }
 
             Console.WriteLine(Message.TotalScore);
-
-            foreach (Player player in previousPlayers)
-            {
-                ShowStatistics(player);
-            }
+            ShowStatistics(previousPlayers);
         }
 
         private void TimerElapsed(object sender, GameTimer::ElapsedEventArgs e)
