@@ -126,6 +126,15 @@
   <data name="IncorectCompose" xml:space="preserve">
     <value>Слово составленно неправильно. Игрок проиграл.</value>
   </data>
+  <data name="IncorrectPlayerCount" xml:space="preserve">
+    <value>Введенное значение должно быть числом больше единицы.</value>
+  </data>
+  <data name="InputPlayerCount" xml:space="preserve">
+    <value>Введите количество игроков:</value>
+  </data>
+  <data name="InputPlayerName" xml:space="preserve">
+    <value>Введите имя игрока под номером</value>
+  </data>
   <data name="InputWord" xml:space="preserve">
     <value>Введите слово:</value>
   </data>
@@ -145,13 +154,16 @@
     <value>Имя игрока: </value>
   </data>
   <data name="PlayerTurn" xml:space="preserve">
-    <value>Ход игрока </value>
+    <value>Ход игрока с именем </value>
   </data>
   <data name="PrimaryWordInput" xml:space="preserve">
     <value>Введите основное слово:</value>
   </data>
   <data name="PrimaryWordOutput" xml:space="preserve">
     <value>Основное слово: </value>
+  </data>
+  <data name="RepeatedName" xml:space="preserve">
+    <value>Имена игроков не могут повторяться.</value>
   </data>
   <data name="Restart" xml:space="preserve">
     <value>Хотите сыграть ещё раз?</value>
@@ -176,6 +188,9 @@
   </data>
   <data name="UsedWords" xml:space="preserve">
     <value>Список использованных слов:</value>
+  </data>
+  <data name="Winner" xml:space="preserve">
+    <value>Игра окончена. Победитель: </value>
   </data>
   <data name="WinsNumber" xml:space="preserve">
     <value> Количество побед: </value>

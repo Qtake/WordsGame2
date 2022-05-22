@@ -1,17 +1,23 @@
-﻿using WordGame2;
-using WordGame2.Languages;
+﻿using WordGame2.Messages;
+using WordGame2.Other;
 
-public class Program
+namespace WordGame2
 {
-    public static void Main()
+    public class Program
     {
-        Language applicationLanguage = new Language();
-        Menu languagesMenu = new Menu(applicationLanguage.Languages.Keys.ToArray(), Messages.SelectLanguage);
-        string key = languagesMenu.SelectMenuElement();
-        applicationLanguage.SelectLanguage(key);
+        public static void Main()
+        {
+            Language applicationLanguage = new Language();
+            Menu languagesMenu = new Menu(applicationLanguage.Languages.Keys.ToArray(), Message.SelectLanguage);
+            string key = languagesMenu.SelectMenuElement();
+            applicationLanguage.SelectLanguage(key);
 
-        Game game = new Game();
-        game.EnterPlayerNames();
-        game.Start();
+            Game game = new Game();
+
+            if (game.EnterPlayerNames())
+            {
+                game.Start();
+            }
+        }
     }
 }

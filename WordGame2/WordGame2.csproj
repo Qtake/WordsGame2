@@ -8,17 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="Languages\Messages.Designer.cs">
+    <Compile Update="Messages\Message.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Messages.resx</DependentUpon>
+      <DependentUpon>Message.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Languages\Messages.resx">
+    <EmbeddedResource Update="Messages\Message.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <LastGenOutput>Message.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

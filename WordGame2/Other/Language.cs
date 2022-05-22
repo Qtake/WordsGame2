@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
 
-namespace WordGame2
+namespace WordGame2.Other
 {
     internal class Language
     {
         public Dictionary<string, string> Languages { get; private set; }
-  
+
         public Language()
         {
             Languages = new Dictionary<string, string>()
@@ -19,6 +19,5 @@ namespace WordGame2
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Languages[key]);
         }
-
     }
 }

@@ -126,6 +126,15 @@
   <data name="IncorectCompose" xml:space="preserve">
     <value>The word composed incrorectly. The player lost.</value>
   </data>
+  <data name="IncorrectPlayerCount" xml:space="preserve">
+    <value>The entered value must be a number greater than one.</value>
+  </data>
+  <data name="InputPlayerCount" xml:space="preserve">
+    <value>Enter players number: </value>
+  </data>
+  <data name="InputPlayerName" xml:space="preserve">
+    <value>Enter the player name under the number </value>
+  </data>
   <data name="InputWord" xml:space="preserve">
     <value>Enter a word:</value>
   </data>
@@ -145,13 +154,16 @@
     <value>Player name: </value>
   </data>
   <data name="PlayerTurn" xml:space="preserve">
-    <value>First player's turn:</value>
+    <value>The turn of the player named </value>
   </data>
   <data name="PrimaryWordInput" xml:space="preserve">
     <value>Enter the main word:</value>
   </data>
   <data name="PrimaryWordOutput" xml:space="preserve">
     <value>The main word: </value>
+  </data>
+  <data name="RepeatedName" xml:space="preserve">
+    <value>Player names must not be repeated.</value>
   </data>
   <data name="Restart" xml:space="preserve">
     <value>Want to play again?</value>
@@ -176,6 +188,9 @@
   </data>
   <data name="UsedWords" xml:space="preserve">
     <value>List of used words:</value>
+  </data>
+  <data name="Winner" xml:space="preserve">
+    <value>Game is over. Winner: </value>
   </data>
   <data name="WinsNumber" xml:space="preserve">
     <value> Number of wins: </value>
