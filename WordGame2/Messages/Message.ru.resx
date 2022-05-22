@@ -189,6 +189,9 @@
   <data name="UsedWords" xml:space="preserve">
     <value>Список использованных слов:</value>
   </data>
+  <data name="Winner" xml:space="preserve">
+    <value>Игра окончена. Победитель: </value>
+  </data>
   <data name="WinsNumber" xml:space="preserve">
     <value> Количество побед: </value>
   </data>

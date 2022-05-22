@@ -277,6 +277,15 @@ namespace WordGame2.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game is over. Winner: .
+        /// </summary>
+        internal static string Winner {
+            get {
+                return ResourceManager.GetString("Winner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Number of wins: .
         /// </summary>
         internal static string WinsNumber {

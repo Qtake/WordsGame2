@@ -18,7 +18,7 @@ namespace WordGame2
         private const int MinWordLength = 8;
         private const int MaxWordLength = 30;
         private const int MinPlayerCount = 2;
-        private const int InitialTimeoutValue = 10000;
+        private const int InitialTimeoutValue = 15000;
 
         public Game()
         {
@@ -81,7 +81,7 @@ namespace WordGame2
             while (_players.Count > 1)
             {
                 ShowCurrentPlayerName(_players.Peek().Name);
-                string word = InputComposedWord();
+                string word = (Console.ReadLine() ?? "").ToLower();
 
                 while (word.StartsWith('/'))
                 {
@@ -103,6 +103,7 @@ namespace WordGame2
                 }
             }
 
+            Console.WriteLine("\n" + Message.Winner + _players.Peek().Name);
             _dataManager.WriteData(_players.Peek().Name);
         }
 
@@ -198,7 +199,7 @@ namespace WordGame2
 
         private static void ShowCurrentPlayerName(string playerName)
         {
-            Console.WriteLine("\n" + Message.PlayerTurn + $"{playerName}:");
+            Console.WriteLine("\n" + Message.PlayerTurn + playerName);
         }
 
         private static string InputComposedWord()
@@ -217,8 +218,11 @@ namespace WordGame2
             }
         }
 
-        private static void ShowStatistics(List<Player> players)
+        private static void ShowStatistics(List<Player> players, string message)
         {
+            Console.Clear();
+            Console.WriteLine(message);
+
             foreach (Player player in players)
             {
                 Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
@@ -246,8 +250,7 @@ namespace WordGame2
                 return;
             }
 
-            Console.WriteLine(Message.Score);
-            ShowStatistics(matchedPlayers);
+            ShowStatistics(matchedPlayers, Message.Score);
         }
 
         private void ShowTotalScore()
@@ -260,8 +263,7 @@ namespace WordGame2
                 return;
             }
 
-            Console.WriteLine(Message.TotalScore);
-            ShowStatistics(previousPlayers);
+            ShowStatistics(previousPlayers, Message.TotalScore);
         }
     }
 }

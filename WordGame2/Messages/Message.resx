@@ -189,6 +189,9 @@
   <data name="UsedWords" xml:space="preserve">
     <value>List of used words:</value>
   </data>
+  <data name="Winner" xml:space="preserve">
+    <value>Game is over. Winner: </value>
+  </data>
   <data name="WinsNumber" xml:space="preserve">
     <value> Number of wins: </value>
   </data>
