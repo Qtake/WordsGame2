@@ -2,7 +2,6 @@
 using WordGame2.Command;
 using WordGame2.DataManagers;
 using WordGame2.Messages;
-using GameTimer = System.Timers;
 
 namespace WordGame2
 {
@@ -14,13 +13,12 @@ namespace WordGame2
         private Dictionary<char, int> _primaryWordLetters;
         private readonly Queue<Player> _players;
         private readonly List<string> _usedWords;
-        private readonly GameTimer::Timer _timer;
         private readonly IDataManager _dataManager;
 
         private const int MinWordLength = 8;
         private const int MaxWordLength = 30;
         private const int MinPlayerCount = 2;
-        private const int InitialTimerValue = 10000;
+        private const int InitialTimeoutValue = 10000;
 
         public Game()
         {
@@ -35,8 +33,6 @@ namespace WordGame2
             _primaryWordLetters = new Dictionary<char, int>();
             _players = new Queue<Player>();
             _usedWords = new List<string>();
-            _timer = new GameTimer::Timer { Interval = InitialTimerValue };
-            _timer.Elapsed += TimerElapsed;
             _dataManager = new FileManager("Players.json");
         }
 
@@ -82,13 +78,10 @@ namespace WordGame2
             _primaryWordLetters = GroupingByLetters(_primaryWord);
             ShowPrimaryWord();
             
-
             while (_players.Count > 1)
             {
                 ShowCurrentPlayerName(_players.Peek().Name);
-                _timer.Start();
                 string word = InputComposedWord();
-                _timer.Stop();
 
                 while (word.StartsWith('/'))
                 {
@@ -111,7 +104,6 @@ namespace WordGame2
             }
 
             _dataManager.WriteData(_players.Peek().Name);
-            _timer.Elapsed -= TimerElapsed;
         }
 
         private bool InputPrimaryWord()
@@ -270,12 +262,6 @@ namespace WordGame2
 
             Console.WriteLine(Message.TotalScore);
             ShowStatistics(previousPlayers);
-        }
-
-        private void TimerElapsed(object? sender, GameTimer::ElapsedEventArgs e)
-        {
-            Console.WriteLine(Message.TimerElapsed);
-            _timer.Stop();
         }
     }
 }
