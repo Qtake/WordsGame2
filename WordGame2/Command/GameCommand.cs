@@ -17,6 +17,10 @@
             {
                 _game.Commands[_command].Invoke();
             }
+            else
+            {
+                Console.WriteLine(Messages.Message.UnknownCommand);
+            }
         }
     }
 }

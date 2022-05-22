@@ -18,7 +18,6 @@ namespace WordGame2
         private const int MinWordLength = 8;
         private const int MaxWordLength = 30;
         private const int MinPlayerCount = 2;
-        private const int InitialTimeoutValue = 15000;
 
         public Game()
         {
@@ -75,13 +74,13 @@ namespace WordGame2
             }
 
             _usedWords.Add(_primaryWord);
-            _primaryWordLetters = GroupingByLetters(_primaryWord);
+            _primaryWordLetters = GroupByLetters(_primaryWord);
             ShowPrimaryWord();
             
             while (_players.Count > 1)
             {
                 ShowCurrentPlayerName(_players.Peek().Name);
-                string word = (Console.ReadLine() ?? "").ToLower();
+                string word = InputWord();
 
                 while (word.StartsWith('/'))
                 {
@@ -91,7 +90,7 @@ namespace WordGame2
                     WaitAnyKey();
                     ShowPrimaryWord();
                     ShowCurrentPlayerName(_players.Peek().Name);
-                    word = InputComposedWord();
+                    word = InputWord();
                 }
 
                 Player currentPlayer = _players.Dequeue();
@@ -111,7 +110,7 @@ namespace WordGame2
         {
             Console.Clear();
             Console.WriteLine(Message.PrimaryWordInput);
-            _primaryWord = (Console.ReadLine() ?? "").ToLower();
+            _primaryWord = InputWord();
 
             if ((_primaryWord?.Length is < MinWordLength or > MaxWordLength) || _primaryWord == string.Empty)
             {
@@ -151,7 +150,7 @@ namespace WordGame2
             return true;
         }
 
-        private static Dictionary<char, int> GroupingByLetters(string word)
+        private static Dictionary<char, int> GroupByLetters(string word)
         {
             Dictionary<char, int> letters = new Dictionary<char, int>();
 
@@ -172,7 +171,7 @@ namespace WordGame2
 
         private bool MatchLetters(string composedWord)
         {
-            Dictionary<char, int> composedWordLetters = GroupingByLetters(composedWord);
+            Dictionary<char, int> composedWordLetters = GroupByLetters(composedWord);
 
             foreach (char key in composedWordLetters.Keys)
             {
@@ -197,14 +196,19 @@ namespace WordGame2
             Console.ReadKey();
         }
 
-        private static void ShowCurrentPlayerName(string playerName)
-        {
-            Console.WriteLine("\n" + Message.PlayerTurn + playerName);
-        }
+        private static void ShowCurrentPlayerName(string playerName) => Console.WriteLine("\n" + Message.PlayerTurn + playerName);
 
-        private static string InputComposedWord()
+        private static string InputWord() => (Console.ReadLine() ?? "").ToLower();
+
+        private static void ShowStatistics(List<Player> players, string message)
         {
-            return (Console.ReadLine() ?? "").ToLower();
+            Console.Clear();
+            Console.WriteLine(message);
+
+            foreach (Player player in players)
+            {
+                Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
+            }
         }
 
         private void ShowUsedWords()
@@ -215,17 +219,6 @@ namespace WordGame2
             foreach (string word in _usedWords)
             {
                 Console.WriteLine(word);
-            }
-        }
-
-        private static void ShowStatistics(List<Player> players, string message)
-        {
-            Console.Clear();
-            Console.WriteLine(message);
-
-            foreach (Player player in players)
-            {
-                Console.WriteLine(Message.PlayerName + player.Name + Message.WinsNumber + player.WinCount);
             }
         }
 

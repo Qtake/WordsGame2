@@ -6,9 +6,9 @@ namespace WordGame2.DataManagers
     {
         private readonly string _filePath;
 
-        public FileManager(string fileName)
+        public FileManager(string filePath)
         {
-            _filePath = fileName;
+            _filePath = filePath;
         }
 
         public List<Player>? ReadData()
@@ -18,7 +18,7 @@ namespace WordGame2.DataManagers
             if (File.Exists(_filePath) && new FileInfo(_filePath).Length > 0)
             {
                 string fileText = File.ReadAllText(_filePath);
-                previousPlayers = JsonSerializer.Deserialize<List<Player>>(fileText) ?? new List<Player>();
+                previousPlayers = JsonSerializer.Deserialize<List<Player>>(fileText);
             }
 
             return previousPlayers;
