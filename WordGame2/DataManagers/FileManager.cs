@@ -24,34 +24,9 @@ namespace WordGame2.DataManagers
             return previousPlayers;
         }
 
-        public void WriteData(string winner)
+        public void WriteData(List<Player> players)
         {
-            List<Player>? previousPlayers = ReadData();
-            string jsonString;
-
-            if (previousPlayers == null)
-            {
-                Player[] newPlayer = { new Player(winner) { WinCount = 1 } };
-                jsonString = JsonSerializer.Serialize(newPlayer);
-                CreateFile(jsonString);
-                return;
-            }
-
-            if (previousPlayers.Select(x => x.Name).Contains(winner))
-            {
-                previousPlayers.First(x => x.Name == winner).WinCount++;
-                jsonString = JsonSerializer.Serialize(previousPlayers);
-                CreateFile(jsonString);
-                return;
-            }
-
-            previousPlayers.Add(new Player(winner) { WinCount = 1 });
-            jsonString = JsonSerializer.Serialize(previousPlayers);
-            CreateFile(jsonString);
-        }
-
-        private void CreateFile(string jsonString)
-        {
+            string jsonString = JsonSerializer.Serialize(players);
             File.WriteAllText(_filePath, jsonString);
         }
     }
