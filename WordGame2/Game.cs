@@ -7,8 +7,7 @@ namespace WordGame2
 {
     internal class Game
     {
-        public Dictionary<string, Action> Commands { get; private set; }
-
+        private readonly Dictionary<string, Action> _commands;
         private string _primaryWord;
         private Dictionary<char, int> _primaryWordLetters;
         private readonly Queue<Player> _players;
@@ -21,7 +20,7 @@ namespace WordGame2
 
         public Game()
         {
-            Commands = new Dictionary<string, Action>()
+            _commands = new Dictionary<string, Action>()
             {
                 { "/show-words", ShowUsedWords },
                 { "/score", ShowScore },
@@ -76,6 +75,7 @@ namespace WordGame2
             _usedWords.Add(_primaryWord);
             _primaryWordLetters = GroupByLetters(_primaryWord);
             ShowPrimaryWord();
+            GameCommand gameCommand = new GameCommand();
             
             while (_players.Count > 1)
             {
@@ -84,9 +84,17 @@ namespace WordGame2
 
                 while (word.StartsWith('/'))
                 {
-                    //CommandActivator activator = new CommandActivator();
-                   // activator.SetCommand(new GameCommand(this, word));
-                   // activator.ActivateCommand();
+                    if (_commands.ContainsKey(word))
+                    {
+                        gameCommand.SetCommand(_commands[word]);
+                        gameCommand.Execute();
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine(Message.UnknownCommand);
+                    }
+
                     WaitAnyKey();
                     ShowPrimaryWord();
                     ShowCurrentPlayerName(_players.Peek().Name);

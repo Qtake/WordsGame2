@@ -2,7 +2,7 @@
 {
     internal interface ICommand
     {
-        //System.Windows.Input.ICommand
+        bool CanExecute();
         void Execute();
     }
 }
