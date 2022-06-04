@@ -3,6 +3,6 @@
     internal interface IDataManager
     {
         List<Player>? ReadData();
-        void WriteData(string winner);
+        void WriteData(List<Player> players);
     }
 }

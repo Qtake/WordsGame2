@@ -84,9 +84,9 @@ namespace WordGame2
 
                 while (word.StartsWith('/'))
                 {
-                    CommandActivator activator = new CommandActivator();
-                    activator.SetCommand(new GameCommand(this, word));
-                    activator.ActivateCommand();
+                    //CommandActivator activator = new CommandActivator();
+                   // activator.SetCommand(new GameCommand(this, word));
+                   // activator.ActivateCommand();
                     WaitAnyKey();
                     ShowPrimaryWord();
                     ShowCurrentPlayerName(_players.Peek().Name);
@@ -102,8 +102,9 @@ namespace WordGame2
                 }
             }
 
-            Console.WriteLine("\n" + Message.Winner + _players.Peek().Name);
-            _dataManager.WriteData(_players.Peek().Name);
+            string winner = _players.Peek().Name;
+            Console.WriteLine("\n" + Message.Winner + winner);
+            _dataManager.WriteData(CreateGameResult(winner));
         }
 
         private bool InputPrimaryWord()
@@ -257,6 +258,20 @@ namespace WordGame2
             }
 
             ShowStatistics(previousPlayers, Message.TotalScore);
+        }
+
+        private List<Player> CreateGameResult(string winner)
+        {
+            List<Player>? previousPlayers = _dataManager.ReadData() ?? new List<Player>();
+
+            if (previousPlayers.Select(x => x.Name).Contains(winner))
+            {
+                previousPlayers.First(x => x.Name == winner).WinCount++;
+                return previousPlayers;
+            }
+
+            previousPlayers.Add(new Player(winner) { WinCount = 1 });
+            return previousPlayers;
         }
     }
 }
